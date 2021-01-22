@@ -131,3 +131,22 @@ jobs:
       with:
         name: buildenv-${{ env.MIXXX_VERSION }}-${{ matrix.vcpkg_triplet }}-${{ github.sha }}
         path: ${{ matrix.vcpkg_path }}/buildenv-${{ env.MIXXX_VERSION }}-${{ matrix.vcpkg_triplet }}-${{ github.sha }}.zip
+
+    - name: "[Windows] Install additional build tools"
+      if: runner.os == 'Windows'
+      # TODO: Add rsync to the windows buildenv
+      run: |
+        $Env:PATH="C:\msys64\usr\bin;$Env:PATH"
+        pacman -S --noconfirm coreutils bash rsync openssh
+        Add-Content -Path "$Env:GITHUB_ENV" -Value "PATH=$Env:PATH"
+
+    - name: "[macOS/Windows] Upload build to downloads.mixxx.org"
+      if: runner.os != 'Linux' && github.event_name == 'push' && env.SSH_PASSWORD != null
+      run: bash mixxx/deploy.sh ${{ matrix.vcpkg_path }}/buildenv-${{ env.MIXXX_VERSION }}-${{ matrix.vcpkg_triplet }}-${{ github.sha }}.zip
+      env:
+        DESTDIR: public_html/downloads/buildenvs/${{ env.MIXXX_VERSION }}
+        SSH_HOST: downloads-hostgator.mixxx.org
+        SSH_KEY: mixxx/downloads-hostgator.mixxx.org.key
+        SSH_PASSWORD: ${{ secrets.DOWNLOADS_HOSTGATOR_DOT_MIXXX_DOT_ORG_KEY_PASSWORD }}
+        SSH_USER: mixxx
+        UPLOAD_ID: ${{ github.run_id }}
