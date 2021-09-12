@@ -171,8 +171,8 @@ elseif(VCPKG_TARGET_IS_OSX)
     FILE(READ "${SOURCE_PATH}/mkspecs/common/macx.conf" _tmp_contents)
         string(REPLACE 
             "QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12" 
-            "QMAKE_MACOSX_DEPLOYMENT_TARGET = ${VCPKG_OSX_DEPLOYMENT_TARGET}" 
-            _tmp_contents "${_tmp_contents}")
+            "QMAKE_MACOSX_DEPLOYMENT_TARGET = ${VCPKG_OSX_DEPLOYMENT_TARGET}\nQMAKE_CXXFLAGS = ${VCPKG_CXX_FLAGS}\nQMAKE_CCFLAGS = ${VCPKG_CC_FLAGS}" 
+            _tmp_contents "${_tmp_contents}")    
     FILE(WRITE "${SOURCE_PATH}/mkspecs/common/macx.conf" "${_tmp_contents}")
     FILE(READ "${SOURCE_PATH}/src/corelib/configure.json" _tmp_contents)
         string(REPLACE 
