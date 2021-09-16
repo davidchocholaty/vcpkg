@@ -489,6 +489,7 @@ if(VCPKG_MANIFEST_MODE AND VCPKG_MANIFEST_INSTALL AND NOT Z_VCPKG_CMAKE_IN_TRY_C
 
         execute_process(
             COMMAND "${Z_VCPKG_EXECUTABLE}" install
+                --debug
                 --triplet "${VCPKG_TARGET_TRIPLET}"
                 --vcpkg-root "${Z_VCPKG_ROOT_DIR}"
                 "--x-wait-for-lock"
